@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const Campground = require("./models/campground");
 const methodOverride = require("method-override"); // Able to use PUT/PATCH in HTML Forms
+const ejsMate = require("ejs-mate");
 
 // Set the mongoose and connect it into the database
 mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
@@ -21,6 +22,7 @@ const app = express();
 // EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.engine("ejs", ejsMate);
 
 app.use(express.urlencoded({ extended: true })); // parse the data from POST request.body
 app.use(methodOverride("_method")); // use method-override
@@ -72,8 +74,6 @@ app.delete("/campgrounds/:id", async (req, res) => {
   await Campground.findByIdAndDelete(id);
   res.redirect("/campgrounds");
 });
-
-
 
 app.listen(3000, () => {
   console.log("Serving on port 3000");
