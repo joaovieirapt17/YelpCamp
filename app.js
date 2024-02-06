@@ -6,7 +6,8 @@ const methodOverride = require("method-override"); // Able to use PUT/PATCH in H
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
-const { campgroundSchema } = require("./schemas.js"); // Joi inside "schemas.js"
+const { campgroundSchema, reviewSchema } = require("./schemas.js"); // Joi inside "schemas.js"
+const Review = require("./models/reviews.js");
 
 // Set the mongoose and connect it into the database
 mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
@@ -30,9 +31,20 @@ app.engine("ejs", ejsMate);
 app.use(express.urlencoded({ extended: true })); // parse the data from POST request.body
 app.use(methodOverride("_method")); // use method-override
 
-// Func to validate campgrounds forms
+// Func to validate campgrounds form
 const validateCampground = (req, res, next) => {
   const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((element) => element.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
+// Func to validate reviews form
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
     const msg = error.details.map((element) => element.message).join(",");
     throw new ExpressError(msg, 400);
@@ -110,6 +122,20 @@ app.delete(
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
+  })
+);
+
+// Send the Review
+app.post(
+  "/campgrounds/:id/reviews",
+  validateReview,
+  catchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review); // push review into campground "reviews" array
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
   })
 );
 
