@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override"); // Able to use PUT/PATCH in HTML Forms
+const session = require("express-session");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 
@@ -31,6 +32,19 @@ app.engine("ejs", ejsMate);
 app.use(express.urlencoded({ extended: true })); // parse the data from POST request.body
 app.use(methodOverride("_method")); // use method-override
 app.use(express.static(path.join(__dirname, "public"))); // use public directory
+
+// SESSION CONFIG
+const sessionConfig = {
+  secret: "thisshouldbeabettersecret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // ms, sec, min, hr, days (7 days in ms)
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+app.use(session(sessionConfig));
 
 // ROUTES
 app.use("/campgrounds", campgrounds); // Campgrounds Routes
