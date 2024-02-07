@@ -30,6 +30,7 @@ app.engine("ejs", ejsMate);
 
 app.use(express.urlencoded({ extended: true })); // parse the data from POST request.body
 app.use(methodOverride("_method")); // use method-override
+app.use(express.static(path.join(__dirname, "public"))); // use public directory
 
 // ROUTES
 app.use("/campgrounds", campgrounds); // Campgrounds Routes
