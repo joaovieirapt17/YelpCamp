@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override"); // Able to use PUT/PATCH in HTML Forms
 const session = require("express-session");
+const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 
@@ -32,6 +33,7 @@ app.engine("ejs", ejsMate);
 app.use(express.urlencoded({ extended: true })); // parse the data from POST request.body
 app.use(methodOverride("_method")); // use method-override
 app.use(express.static(path.join(__dirname, "public"))); // use public directory
+app.use(flash());
 
 // SESSION CONFIG
 const sessionConfig = {
@@ -45,6 +47,13 @@ const sessionConfig = {
   },
 };
 app.use(session(sessionConfig));
+
+// FLASH MIDDLEWARE
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success"); // local 'success' variable
+  res.locals.error = req.flash("error"); // local 'error' variable
+  next();
+});
 
 // ROUTES
 app.use("/campgrounds", campgrounds); // Campgrounds Routes

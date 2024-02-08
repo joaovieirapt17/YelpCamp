@@ -24,11 +24,12 @@ router.get(
   })
 );
 
+// New campground form
 router.get("/new", (req, res) => {
   res.render("campgrounds/new");
 });
 
-// Send data via post
+// Send data via post to create a new campground
 router.post(
   "/",
   validateCampground,
@@ -38,6 +39,7 @@ router.post(
 
     const campground = new Campground(req.body.campground);
     await campground.save();
+    req.flash("success", "Successfully made a new campground!"); // flash message middleware
     res.redirect(`/campgrounds/${campground._id}`);
   })
 );
@@ -48,6 +50,11 @@ router.get(
     const campground = await Campground.findById(req.params.id).populate(
       "reviews"
     );
+    // if not found it will trigger the flash message
+    if (!campground) {
+      req.flash("error", "Cannot find that campground!");
+      return res.redirect("/campgrounds");
+    }
     res.render("campgrounds/show", { campground });
   })
 );
@@ -58,6 +65,11 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params; // take the id
     const campground = await Campground.findById(id); // find the id
+    // if not found it will trigger the flash message
+    if (!campground) {
+      req.flash("error", "Cannot find that campground!");
+      return res.redirect("/campgrounds");
+    }
     res.render("campgrounds/edit", { campground });
   })
 );
@@ -71,6 +83,7 @@ router.put(
     const updatedCampground = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
+    req.flash("success", "Successfully updated campground!"); // flash message middleware
     res.redirect(`/campgrounds/${updatedCampground._id}`);
   })
 );
@@ -81,6 +94,7 @@ router.delete(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
+    req.flash("success", "Successfully deleted campground!"); // flash message middleware
     res.redirect("/campgrounds");
   })
 );
