@@ -11,9 +11,9 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 // REQUIRE ROUTES
-const campgroundRoutes = require("./routes/campgrounds.js"); // Campground Routes
-const reviewRoutes = require("./routes/reviews.js"); // Reviews Routes
-const userRoutes = require("./routes/users.js");
+const campgroundRoutes = require("./routes/campgrounds.js"); // Campground Route
+const reviewRoutes = require("./routes/reviews.js"); // Review Route
+const userRoutes = require("./routes/users.js"); // User Route
 
 // Set the mongoose and connect it into the database
 mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
