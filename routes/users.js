@@ -44,4 +44,15 @@ router.post(
   }
 );
 
+// Logout Route
+router.get("/logout", (req, res, next) => {
+  req.logout(function (error) {
+    if (error) {
+      return next(error);
+    }
+    req.flash("success", "Goodbye!");
+    res.redirect("/campgrounds");
+  });
+});
+
 module.exports = router;
