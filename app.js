@@ -11,8 +11,9 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
 // REQUIRE ROUTES
-const campgrounds = require("./routes/campgrounds.js"); // Campground Routes
-const reviews = require("./routes/reviews.js"); // Reviews Routes
+const campgroundRoutes = require("./routes/campgrounds.js"); // Campground Routes
+const reviewRoutes = require("./routes/reviews.js"); // Reviews Routes
+const userRoutes = require("./routes/users.js");
 
 // Set the mongoose and connect it into the database
 mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
@@ -67,8 +68,9 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
-app.use("/campgrounds", campgrounds); // Campgrounds Routes
-app.use("/campgrounds/:id/reviews", reviews); // Reviews Routes
+app.use("/campgrounds", campgroundRoutes); // Campgrounds Routes
+app.use("/campgrounds/:id/reviews", reviewRoutes); // Reviews Routes
+app.use("/", userRoutes); // Users Routes
 
 // If the route doesn't exist (404)
 app.all("*", (req, res, next) => {
