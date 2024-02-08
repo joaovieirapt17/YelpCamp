@@ -62,6 +62,7 @@ passport.deserializeUser(User.deserializeUser());
 
 // FLASH MIDDLEWARE
 app.use((req, res, next) => {
+  res.locals.currentUser = req.user; // track 'current user'
   res.locals.success = req.flash("success"); // local 'success' variable
   res.locals.error = req.flash("error"); // local 'error' variable
   next();
