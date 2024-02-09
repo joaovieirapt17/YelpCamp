@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-// Validation on server side
+// Validation the data on server side (req.body)
 module.exports.campgroundSchema = Joi.object({
   campground: Joi.object({
     title: Joi.string().required(),
