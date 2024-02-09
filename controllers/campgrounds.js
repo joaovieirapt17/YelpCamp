@@ -49,6 +49,7 @@ module.exports.renderEditForm = async (req, res) => {
 };
 
 module.exports.updateCampground = async (req, res) => {
+  const { id } = req.params;
   // Update the Campground
   const updatedCampground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
@@ -58,6 +59,7 @@ module.exports.updateCampground = async (req, res) => {
 };
 
 module.exports.destroyCampground = async (req, res) => {
+  const { id } = req.params;
   await Campground.findByIdAndDelete(id);
   req.flash("success", "Successfully deleted campground!"); // flash message middleware
   res.redirect("/campgrounds");

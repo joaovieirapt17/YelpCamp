@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
-const Campground = require("../models/campground");
 const { isLoggedIn, validateCampground, isAuthor } = require("../middleware.js"); // isLoggedIn Middleware
 const campgrounds = require("../controllers/campgrounds.js");
 
@@ -28,7 +27,7 @@ router.put(
   catchAsync(campgrounds.updateCampground)
 );
 
-// Delete Campground
+// Delete route
 router.delete("/:id", isLoggedIn, isAuthor, catchAsync(campgrounds.destroyCampground));
 
 module.exports = router;
