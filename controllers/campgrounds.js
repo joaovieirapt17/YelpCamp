@@ -58,6 +58,13 @@ module.exports.updateCampground = async (req, res) => {
   const updatedCampground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
+
+  // map the array and extract the path and filename from the images
+  const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+
+  updatedCampground.images.push(...imgs);
+  await updatedCampground.save();
+
   req.flash("success", "Successfully updated campground!"); // flash message middleware
   res.redirect(`/campgrounds/${updatedCampground._id}`);
 };

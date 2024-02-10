@@ -27,7 +27,7 @@ router
   // Show Campground
   .get(catchAsync(campgrounds.showCampground))
   // Edit Campground data
-  .put(isLoggedIn, isAuthor, validateCampground, catchAsync(campgrounds.updateCampground))
+  .put(isLoggedIn, isAuthor, upload.array("image"), validateCampground, catchAsync(campgrounds.updateCampground))
   // Delete route
   .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.destroyCampground));
 
