@@ -1,55 +1,78 @@
 <% layout("layouts/boilerplate") %>
-<link rel="stylesheet" href="/styles/stars.css">
+<link rel="stylesheet" href="/styles/stars.css" />
 
 <div class="row mb-5">
   <div class="col-6">
     <div class="card">
-      <img src="<%= campground.image %>" class="card-img-top" alt="campground image" />
+      <% for (let img of campground.images) { %>
+      <img src="<%= img.url %>" class="card-img-top" alt="campground image" />
+      <% } %>
       <div class="card-body">
         <h5 class="card-title"><%= campground.title %></h5>
         <p class="card-text"><%= campground.description %></p>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item text-muted"><%= campground.location %></li>
-        <li class="list-group-item">
-          Submitted by <%= campground.author.username %>
-        </li>
+        <li class="list-group-item">Submitted by <%= campground.author.username %></li>
         <li class="list-group-item">€<%= campground.price %>/night</li>
       </ul>
       <!-- Permission to show the buttons "Delete" and "Edit" only to the author -->
       <% if (currentUser && campground.author.equals(currentUser._id)) { %>
-        <div class="card-body">
-          <a class="card-link btn btn-info" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-          <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
-            <button class="btn btn-danger">Delete</button>
-          </form>
-        </div>
+      <div class="card-body">
+        <a class="card-link btn btn-info" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+        <form
+          class="d-inline"
+          action="/campgrounds/<%= campground._id %>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
       <% } %>
-
     </div>
   </div>
   <div class="col-6">
     <% if (currentUser) { %>
     <h2 class="mt-5">Leave a Review</h2>
-    <form class="my-3 validated-form" action="/campgrounds/<%=campground._id%>/reviews" method="POST" novalidate>
+    <form
+      class="my-3 validated-form"
+      action="/campgrounds/<%=campground._id%>/reviews"
+      method="POST"
+      novalidate
+    >
       <div class="mb3">
-      <fieldset class="starability-basic">
-        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
-        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-        <label for="first-rate1" title="Terrible">1 star</label>
-        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-        <label for="first-rate2" title="Not good">2 stars</label>
-        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-        <label for="first-rate3" title="Average">3 stars</label>
-        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-        <label for="first-rate4" title="Very good">4 stars</label>
-        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-        <label for="first-rate5" title="Amazing">5 stars</label>
-      </fieldset>
-    </div>
+        <fieldset class="starability-basic">
+          <input
+            type="radio"
+            id="no-rate"
+            class="input-no-rate"
+            name="review[rating]"
+            value="1"
+            checked
+            aria-label="No rating."
+          />
+          <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+          <label for="first-rate1" title="Terrible">1 star</label>
+          <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+          <label for="first-rate2" title="Not good">2 stars</label>
+          <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+          <label for="first-rate3" title="Average">3 stars</label>
+          <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+          <label for="first-rate4" title="Very good">4 stars</label>
+          <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+          <label for="first-rate5" title="Amazing">5 stars</label>
+        </fieldset>
+      </div>
       <div class="mb-3">
         <label class="form-label" for="body">Review: </label>
-        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+        <textarea
+          class="form-control"
+          name="review[body]"
+          id="body"
+          cols="30"
+          rows="3"
+          required
+        ></textarea>
         <div class="invalid-feedback">Please insert a review!</div>
       </div>
       <button class="btn btn-success">Submit Review</button>
@@ -66,7 +89,10 @@
         <p class="card-text">Review: <%= review.body %></p>
         <!-- Permission to show the buttons "Delete" and "Edit" only to the author -->
         <% if (currentUser && review.author.equals(currentUser._id)) { %>
-        <form action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
+        <form
+          action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
+          method="POST"
+        >
           <button class="btn btn-sm btn-danger">Delete</button>
         </form>
         <% } %>
