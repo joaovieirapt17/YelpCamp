@@ -3,15 +3,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema; // shortcut to 'mongoose.Schema'
 const Review = require("./reviews");
 
+// Image Schema
+const ImageSchema = new Schema({
+  url: String,
+  filename: String,
+});
+
 // Campground Schema
 const CampgroundSchema = new Schema({
   title: String,
-  images: [
-    {
-      url: String,
-      filename: String,
-    },
-  ],
+  images: [ImageSchema],
   price: Number,
   description: String,
   location: String,
