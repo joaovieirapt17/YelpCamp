@@ -9,34 +9,45 @@ const ImageSchema = new Schema({
   filename: String,
 });
 
+const opts = { toJSON: { virtuals: true } };
+
 // Campground Schema
-const CampgroundSchema = new Schema({
-  title: String,
-  images: [ImageSchema],
-  geometry: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      required: true,
+const CampgroundSchema = new Schema(
+  {
+    title: String,
+    images: [ImageSchema],
+    geometry: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
-    coordinates: {
-      type: [Number],
-      required: true,
+    price: Number,
+    description: String,
+    location: String,
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
+    reviews: [
+      {
+        type: Schema.Types.ObjectId, // Object Id from "Review" model
+        ref: "Review", // Review model
+      },
+    ],
   },
-  price: Number,
-  description: String,
-  location: String,
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-  reviews: [
-    {
-      type: Schema.Types.ObjectId, // Object Id from "Review" model
-      ref: "Review", // Review model
-    },
-  ],
+  opts
+);
+
+// Properties outside database: ('.virtual')
+CampgroundSchema.virtual("properties.popUpMarkup").get(function () {
+  return `<strong><a href="/campgrounds/${this._id}">${this.title} </a><strong>
+          <p>${this.description.substring(0, 40)}...</p>`;
 });
 
 // Mongoose Middleware to delete all associated reviews
