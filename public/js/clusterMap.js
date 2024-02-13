@@ -1,6 +1,6 @@
 mapboxgl.accessToken = mapBoxToken;
 const map = new mapboxgl.Map({
-  container: "map",
+  container: "cluster-map",
   style: "mapbox://styles/mapbox/dark-v11",
   center: [-103.5917, 40.6699],
   zoom: 3,
