@@ -11,6 +11,7 @@ const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 const passport = require("passport");
+const helmet = require("helmet");
 
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
@@ -44,14 +45,17 @@ app.use(express.urlencoded({ extended: true })); // parse the data from POST req
 app.use(methodOverride("_method")); // use method-override
 app.use(express.static(path.join(__dirname, "public"))); // use public directory
 app.use(mongoSanitize()); // Avoid mongo injection characters
+// app.use(helmet());
 
 // SESSION CONFIG
 const sessionConfig = {
+  name: "session",
   secret: "thisshouldbeabettersecret",
   resave: false,
   saveUninitialized: true,
   cookie: {
-    httpOnly: true,
+    httpOnly: true, // cookies accessed only through http
+    // secure: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // ms, sec, min, hr, days (7 days in ms)
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
