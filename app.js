@@ -7,6 +7,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override"); // Able to use PUT/PATCH in HTML Forms
 const session = require("express-session");
+const MongoStore = require("connect-mongo").create;
 const flash = require("connect-flash");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
@@ -22,8 +23,10 @@ const campgroundRoutes = require("./routes/campgrounds.js"); // Campground Route
 const reviewRoutes = require("./routes/reviews.js"); // Review Route
 const userRoutes = require("./routes/users.js"); // User Route
 
+// const dbUrl = process.env.DB_URL;
+const dbUrl = "mongodb://127.0.0.1:27017/yelp-camp";
 // Set the mongoose and connect it into the database
-mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp");
+mongoose.connect(dbUrl);
 
 // Establish a connection to the MongoDB database using Mongoose
 const db = mongoose.connection;
@@ -47,8 +50,16 @@ app.use(express.static(path.join(__dirname, "public"))); // use public directory
 app.use(mongoSanitize()); // Avoid mongo injection characters
 // app.use(helmet());
 
+const store = MongoStore({
+  mongoUrl: dbUrl,
+  secret: "thisshouldbeabettersecret",
+  touchAfter: 24 * 60 * 60,
+  mongooseConnection: mongoose.connection,
+});
+
 // SESSION CONFIG
 const sessionConfig = {
+  store,
   name: "session",
   secret: "thisshouldbeabettersecret",
   resave: false,
