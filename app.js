@@ -23,8 +23,7 @@ const campgroundRoutes = require("./routes/campgrounds.js"); // Campground Route
 const reviewRoutes = require("./routes/reviews.js"); // Review Route
 const userRoutes = require("./routes/users.js"); // User Route
 
-// const dbUrl = process.env.DB_URL;
-const dbUrl = "mongodb://127.0.0.1:27017/yelp-camp";
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/yelp-camp";
 // Set the mongoose and connect it into the database
 mongoose.connect(dbUrl);
 
@@ -50,9 +49,11 @@ app.use(express.static(path.join(__dirname, "public"))); // use public directory
 app.use(mongoSanitize()); // Avoid mongo injection characters
 // app.use(helmet());
 
+const secret = process.env.SECRET || "thisshouldbeabettersecret";
+
 const store = MongoStore({
   mongoUrl: dbUrl,
-  secret: "thisshouldbeabettersecret",
+  secret,
   touchAfter: 24 * 60 * 60,
   mongooseConnection: mongoose.connection,
 });
@@ -61,7 +62,7 @@ const store = MongoStore({
 const sessionConfig = {
   store,
   name: "session",
-  secret: "thisshouldbeabettersecret",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -112,6 +113,7 @@ app.use((error, req, res, next) => {
   res.status(statusCode).render("error", { error }); // use "error.ejs"
 });
 
-app.listen(3000, () => {
-  console.log("Serving on port 3000");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Serving on port ${port}`);
 });
