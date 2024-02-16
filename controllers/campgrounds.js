@@ -72,9 +72,20 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateCampground = async (req, res) => {
   const { id } = req.params;
+  const { location } = req.body.campground;
+
+  // Forward geocode the new location
+  const geoData = await geocoder
+    .forwardGeocode({
+      query: location,
+      limit: 1,
+    })
+    .send();
+
   // Update the Campground
   const updatedCampground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
+    geometry: geoData.body.features[0].geometry, // Update the geometry with new location
   });
 
   // map the array and extract the path and filename from the images
